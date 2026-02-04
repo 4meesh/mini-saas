@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { useTheme } from '../contexts/ThemeContext'
 
 export const Login = () => {
     const navigate = useNavigate()
     const { signIn, signUp } = useAuth()
-    const { theme, toggleTheme } = useTheme()
     const [isSignUp, setIsSignUp] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -35,11 +33,6 @@ export const Login = () => {
 
     return (
         <div className="auth-container">
-            <div style={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 1000 }}>
-                <button className="btn-icon" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
-                    {theme === 'light' ? '🌙' : '☀️'}
-                </button>
-            </div>
             <div className="auth-card">
                 <div className="auth-header">
                     <h1>{isSignUp ? 'Create Account' : 'Welcome Back'}</h1>

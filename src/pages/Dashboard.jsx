@@ -67,26 +67,33 @@ export const Dashboard = () => {
 
         setLoading(true)
         try {
-            const { error } = await supabase
-                .from('tasks')
-                .insert([
-                    {
-                        content: newTask,
-                        user_id: user.id,
-                        completed: false,
-                        priority: newPriority,
-                        category: newCategory
-                    }
-                ])
+            // Log the data being inserted for debugging
+            const taskData = {
+                content: newTask,
+                user_id: user.id,
+                completed: false
+            }
 
-            if (error) throw error
+            console.log('Inserting task:', taskData)
+
+            const { data, error } = await supabase
+                .from('tasks')
+                .insert([taskData])
+                .select()
+
+            if (error) {
+                console.error('Supabase error:', error)
+                throw error
+            }
+
+            console.log('Task created successfully:', data)
             setNewTask('')
             setNewPriority('medium')
             setNewCategory('general')
             await fetchTasks()
         } catch (err) {
             console.error('Error creating task:', err)
-            alert('Failed to create task')
+            alert(`Failed to create task: ${err.message}`)
         } finally {
             setLoading(false)
         }
@@ -217,11 +224,15 @@ export const Dashboard = () => {
                             📤 Import
                             <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
                         </label>
-                        <button className="btn btn-secondary btn-sm" onClick={handleSignOut}>
-                            Sign Out
-                        </button>
-                        <button className="btn-icon" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
+                        <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={toggleTheme}
+                            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                        >
                             {theme === 'light' ? '🌙' : '☀️'}
+                        </button>
+                        <button className="btn btn-secondary" onClick={handleSignOut}>
+                            Sign Out
                         </button>
                     </div>
                 </div>
